@@ -1,3 +1,5 @@
 .ipfs/
 providers/
 kadrtt.properties
+getdata/
+IPFS_java/bin/App.class
