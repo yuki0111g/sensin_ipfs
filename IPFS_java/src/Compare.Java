@@ -24,8 +24,8 @@ public class Compare {
     }
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        File file1 = new File("IPFS_java/targetDir/test.txt");
-        File file2 = new File("IPFS_java/targetDir/test2.txt");
+        File file1 = new File("targetDir\\test.txt");
+        File file2 = new File("targetDir\\test2.txt");
 
         boolean areEqual = compareFiles(file1, file2);
         System.out.println("ファイルは" + (areEqual ? "同じ" : "異なる"));
