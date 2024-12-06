@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception, IOException, NoSuchAlgorithmException{
         // setCustomAttribute("targetDir\\test.txt", "id", "メタデータの中身");
         // String metadata = getCustomAttribute("targetDir\\test.txt", "id");
         // System.out.println(metadata);
@@ -22,6 +26,11 @@ public class App {
         Path contentPath = WildcardFileSearch("1AmhV8XkWPve2EYQdkU6vDWT9JLnapdGcpw2M1wUCRZuM4");
         System.out.println(contentPath);
 
+        File file = new File("targetDir\\test.txt");
+        File metaData = new File("targetDir\\test2.txt");
+
+        boolean areEqual = compareFiles(file, metaData);
+        System.err.println("ファイルは" + (areEqual ? "同じ" : "異なる"));
     }
 
     //メタデータをセット
@@ -113,5 +122,25 @@ public class App {
 
         }
         return null; // 返すpathがない
+    }
+
+    public static byte[] calculateHash(File file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int n;
+            while ((n = fis.read(buffer)) != -1) {
+                digest.update(buffer, 0, n);
+            }
+        }
+        return digest.digest();
+    }
+
+    public static boolean compareFiles(File file1, File file2) throws IOException, NoSuchAlgorithmException {
+        byte[] hash1 = calculateHash(file1);
+        byte[] hash2 = calculateHash(file2);
+
+        System.err.println("filsHash:" + hash1 + " metaDataHadh:" + hash2);
+        return MessageDigest.isEqual(hash1, hash2);
     }
 }
